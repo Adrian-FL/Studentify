@@ -1,0 +1,190 @@
+@page "/courses/details/{id}"
+
+@using Studentify.Models;
+@using Studentify.Web.Services;
+
+<div class="container">
+
+    @if (Course == null )
+    {
+        <h3>Loading</h3>
+    }
+    else
+    {
+
+        <!-- Section: About 1 -->
+        <section id="about" class="mt-5 mb-5 py-3 wow fadeIn" data-wow-delay="0.2s">
+
+            <!-- Grid row -->
+            <div class="row pt-2 mt-5">
+
+                <!-- Grid column -->
+                <div class="col-lg-5 col-md-12 mb-3 wow fadeIn" data-wow-delay="0.4s">
+                    <!-- Image -->
+                    <img src="@Course.ImageUrl" class="img-fluid z-depth-1 rounded"
+                         alt="My photo">
+                </div>
+                <!-- Grid column -->
+                <!-- Grid column -->
+                <div class="col-lg-6 ml-auto col-md-12 wow fadeIn" data-wow-delay="0.4s">
+
+                    <!-- Secion heading -->
+                    <h3 class="mb-5 dark-grey-text title font-weight-bold wow fadeIn" data-wow-delay="0.2s">
+                        <strong>@Course.CourseName</strong>
+                    </h3>
+
+                    <!-- Description -->
+                    <p align="justify" class="grey-text">
+                        @Course.Description
+                    </p>
+
+                </div>
+                <!-- Grid column -->
+
+            </div>
+            <!-- Grid row -->
+
+        </section>
+        <!-- Section: About 1 -->
+
+        <hr>
+
+        <!-- Section: About 2 -->
+<section id="about" class="mt-5 mb-5 pb-3 wow fadeIn" data-wow-delay="0.2s">
+
+    <!-- Grid row -->
+    <div class="row pt-4 mt-5">
+
+        <!-- Grid column -->
+        <div class="col-lg-6 col-md-12 wow fadeIn" data-wow-delay="0.4s">
+                    <!-- Secion heading -->
+                    <h3 class="mb-5 dark-grey-text title font-weight-bold wow fadeIn" data-wow-delay="0.2s">
+                        <strong>Our belief</strong>
+                    </h3>
+
+                    <!-- Description -->
+                    <p align="justify" class="grey-text">
+                        Our belief is that teachers are at the center of all knowledge and their wisdom is the key for you as a student to flourish.
+                    </p>
+
+                </div>
+                <!-- Grid column -->
+                <!-- Grid column -->
+                <div class="col-lg-6 col-md-12 mb-3 wow fadeIn" data-wow-delay="0.4s">
+
+                    <div class="text-left">
+                        <h6 class="title font-weight-bold dark-grey-text spacing mt-4 mx-4">
+                            <i class="fas fa-square orange-text mr-2" aria-hidden="true"></i>
+                            <strong>Knock knock?</strong>
+                        </h6>
+                        <p class="grey-text font-small mx-4">
+                            Who's there? Carry. Carry who? Carry it over to next sprint!
+                        </p>
+                    </div>
+
+                    <div class="text-left">
+                        <h6 class="title font-weight-bold dark-grey-text  spacing mt-4 mx-4">
+                            <i class="fas fa-square orange-text mr-2" aria-hidden="true"></i>
+                            <strong>Simply KISS</strong>
+                        </h6>
+                        <p class="grey-text font-small mx-4">
+                            Keep it simple stupid.
+                        </p>
+                    </div>
+
+                    <div class="text-left">
+                        <h6 class="title font-weight-bold dark-grey-text spacing mt-4 mx-4">
+                            <i class="fas fa-square orange-text mr-2" aria-hidden="true"></i>
+                            <strong>Stay DRY</strong>
+                        </h6>
+                        <p class="grey-text font-small mx-4">
+                            Do not repeat yourself.
+                        </p>
+                    </div>
+
+
+        </div>
+        <!-- Grid column -->
+
+    </div>
+
+    <div class="row pt-4 d-flex justify-content-center">
+        <div class="card-footer text-center">
+            <a href="/courses" class="btn btn-primary">Back</a>
+            <a href="/courses" class="btn btn-primary">Edit</a>
+            <button type="button" class="btn btn-danger m-1" @onclick="DeleteCourse"> Delete </button>
+        </div>
+    </div>
+
+        <!-- Grid row -->
+
+</section>
+        <!-- Section: About 2 -->
+
+        <hr>
+
+        <!-- Section: Team -->
+        <section class="team-section pb-5 mb-4">
+
+            <!-- Secion heading -->
+            <h3 class="my-5 pt-4 text-center title font-weight-bold wow fadeIn" data-wow-delay="0.2s">
+                <strong>Meet your teacher</strong>
+            </h3>
+            <!-- Section description -->
+            <p class="grey-text w-responsive text-center mx-auto mb-5">
+                With more than twenty years of experience @Teacher.TeacherName has to be one of the most sought after teachers in the country.
+            </p>
+
+            <!-- Grid row -->
+            <div class="row mb-lg-4 text-center text-md-left">
+
+                <!-- Grid column -->
+                <div class="col-lg-12 col-md-12 mb-5 d-flex justify-content-center">
+
+                    <div class="avatar white mb-md-0 mb-4">
+
+                        <img src="@(Teacher.ImageUrl == null? "/images/default.png" : Teacher.ImageUrl)" class="rounded z-depth-1"
+                             alt="First sample avatar image">
+                    </div>
+
+                </div>             
+            </div>
+
+        </section>
+        <!-- Section: Team -->
+
+    }
+</div>
+
+@code {
+    [Inject]
+    public ICourseService CourseService { get; set; }
+
+    [Inject]
+    public ITeacherService TeacherService { get; set; }
+
+    public Course Course { get; set; }
+    public Teacher Teacher { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+
+    [Parameter]
+    public EventCallback<int> OnTeacherDeleted { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Course = await CourseService.GetCourse(Int32.Parse(Id));
+        Teacher = await TeacherService.GetTeacher(Course.TeacherId);
+    }
+
+    protected async Task DeleteCourse()
+    {
+        await CourseService.DeleteCourse(Course.CourseId);
+        NavigationManager.NavigateTo("/Courses", true);
+    }
+}

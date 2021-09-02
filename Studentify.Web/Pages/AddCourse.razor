@@ -1,0 +1,90 @@
+﻿@page "/courses/add-course"
+
+@using Studentify.Web.Services
+@using Studentify.Models
+@using System.Threading.Tasks
+
+<div class="lap2Div"></div>
+
+<div class=" container">
+
+    <EditForm Model="@Course" OnValidSubmit="HandleValidSubmit" class="pt-5">
+        <h3>Add Course</h3>
+        <hr />
+        <ValidationSummary />
+        <div class="form-group row">
+            <label for="courseName" class="col-sm-2 col-form-label">
+                Name
+            </label>
+            <div class="col-sm-10">
+                <InputText id="courseName" class="form-control" placeholder="Course Name"
+                           @bind-Value="Course.CourseName" />
+                <ValidationMessage For="@(() => Course.CourseName)" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="description" class="col-sm-2 col-form-label">
+                Description
+            </label>
+            <div class="col-sm-10">
+                <InputText id="description" class="form-control" placeholder="Course Description"
+                           @bind-Value="Course.Description" />
+                <ValidationMessage For="@(() => Course.Description)" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="imageUrl" class="col-sm-2 col-form-label">
+                Image URL
+            </label>
+            <div class="col-sm-10">
+                <InputText id="imageUrl" class="form-control" placeholder="Course ImageUrl"
+                           @bind-Value="Course.ImageUrl" />
+                <ValidationMessage For="@(() => Course.ImageUrl)" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="subjectId" class="col-sm-2 col-form-label">
+                Subject ID
+            </label>
+            <div class="col-sm-10">
+                <input id="subjectId" class="form-control" placeholder="Course Subject ID"  @bind="Course.SubjectId" />
+                <ValidationMessage For="@(() => Course.SubjectId)" />
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="teacherId" class="col-sm-2 col-form-label">
+                Teacher ID
+            </label>
+            <div class="col-sm-10">
+                <input id="teacherId" class="form-control" placeholder="Course Teacher ID"
+                           @bind="Course.TeacherId" />
+                <ValidationMessage For="@(() => Course.TeacherId)" />
+            </div>
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </EditForm>
+    </div>
+
+
+
+    @code {
+
+        [Inject]
+        public ICourseService CourseService { get; set; }
+
+        private Course Course = new Course();
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
+        protected async Task HandleValidSubmit()
+        {
+            Course = await CourseService.CreateCourse(Course);
+
+            if (Course != null)
+            {
+                NavigationManager.NavigateTo($"/courses/details/{Course.CourseId}");
+            }
+        }
+
+    }

@@ -1,0 +1,103 @@
+﻿@page "/"
+
+<Hero />
+
+<!--About Studentify-->
+<div class="container my-5" id="top">
+    <div class="row py-5">
+
+        <img src="https://mdbootstrap.com/img/Photos/Horizontal/Architecture/4-col/img%20%289%29.jpg"
+             class="col-5 align-self-baseline" alt="Campus">
+
+        <div class="col-7">
+            <h2 class="font-weight-bold display-4">About Studentify</h2>
+
+            <div class="dark-grey-text">
+
+                <p>
+                    Studentify is the brainchild of Adrian, Mikael, Saiid and Jonathan. Studentify has a campus in Dallas Texas where students can take courses in many different subjects.
+                    Studentify's current range of courses includes courses on web development and basic mathematics. We are always looking for more courses to offer our students.
+                </p>
+
+                <p>
+                    Our belief is that teachers are at the center of all knowledge and their wisdom is the key for you as a student to flourish.
+
+                </p>
+
+                <ul class="list-unstyled pl-0">
+                    <li class="font-weight-bold">Studentify's core values are</li>
+                    <li>Respect your elders</li>
+                    <li>Wear sunscreen</li>
+                    <li>Study hard</li>
+                    <li>Just do it</li>
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--Quote-->
+<div class="streak streak-photo streak-md my-5"
+     style="background-image: url('https://mdbootstrap.com/img/Photos/Horizontal/Things/full%20page/img%20%287%29.jpg');">
+    <div class="flex-center mask rgba-indigo-strong">
+        <div class="text-center white-text">
+            <h2 class="h2-responsive mb-5">
+                <i class="fas fa-quote-left" aria-hidden="true"></i> Creativity requires the courage to let go of
+                certainties
+                <i class="fas fa-quote-right" aria-hidden="true"></i>
+            </h2>
+            <h5 class="text-center font-italic " data-wow-delay="0.2s">~ Erich Fromm</h5>
+        </div>
+    </div>
+</div>
+
+@if (Courses == null)
+{
+    <div class="spinner"></div>
+}
+else
+{
+        <PopularCourses Courses="@Courses" HeaderStyle="@headerStyle"/>
+}
+
+<!--Visit the campus-->
+<div class="container d-flex flex-column my-5">
+
+    <h2 class="text-center font-weight-bold mt-5 display-4">
+        Visit campus
+    </h2>
+
+    <p class="text-center mb-5">
+        You are more than welcome to visit us in Dallas Texas any time. We arrange guided tours of our campus every week on Thursdays. Currently, about 200 students are enrolled in courses locally and about 2500+ students sign up for our online courses. Do not hesitate to contact us if you have any questions.
+    </p>
+
+    <div class="flex-center justify-content-between align-baseline">
+        <img class="w-25" src="/images/pic1.jpg">
+        <img class="w-25" src="/images/pic2.jpg">
+        <img class="w-25" src="/images/pic3.jpg">
+    </div>
+</div>
+
+<div class="d-flex justify-content-center pb-3">
+    <a class="text-center" href="/#top">Back to top <span class="oi oi-arrow-top"></span></a>
+</div>
+
+
+@code
+{
+    [Inject]
+    public ICourseService CourseService { get; set; }
+
+
+    public IEnumerable<Course> Courses { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Courses = (await CourseService.GetCourses()).ToList();
+    }
+
+    string headerStyle = "font-weight-bold display-4";
+
+}
